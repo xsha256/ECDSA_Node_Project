@@ -4,7 +4,7 @@ import "./App.scss";
 import { useState } from "react";
 
 function App() {
-  const [balance, setBalance] = useState(0);
+  const [balance, setBalance] = useState();
   const [address, setAddress] = useState("");
 
   return (
