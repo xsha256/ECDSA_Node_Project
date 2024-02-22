@@ -10,7 +10,7 @@ console.log("Public key: ", toHex(publicKey));
 
 //! Wallet 1
 // Private key:  116a7167b2239d6a0347815005cbf24bbfc426c9dbadf9c66334c8f5cf3e9d27
-// Public key:  02cbf53f5c09320e589dec0f9470173f2d263b3beac579874f9b5a3afe29a14146
+// Public key:  cd20e589dec0f9470173f2d263b3beac579874f9b5a3afe29a14146
 
 //! Wallet 2
 // Private key:  e73d1f45421257520c28b0c8671d401a8cc47ec4b1487759e232c17f8c7fc74a
