@@ -1,12 +1,14 @@
+import { secp256k1 } from "ethereum-cryptography/secp256k1";
+import { toHex } from "ethereum-cryptography/utils";
 import { useState } from "react";
 import server from "./server";
-import {address as walletAddress} from "./Wallet";
-import * as secp256k1 from "ethereum-cryptography/secp256k1";
-import { toHex }  from "ethereum-cryptography/utils";
 
 
 function Transfer({ address, setBalance }) {
-  console.log("wallet address ", walletAddress)
+  console.log("wallet address ", address)
+  console.log("Private key:  e73d1f45421257520c28b0c8671d401a8cc47ec4b1487759e232c17f8c7fc74a")
+  console.log("Public key:  038d0a4edb6b66470f45cdb3579196c7258b4f65ad59c99aab53ac78a5660df1f8")
+  //! código original
   // const [sendAmount, setSendAmount] = useState("");
   // const [recipient, setRecipient] = useState("");
 
@@ -38,9 +40,12 @@ function Transfer({ address, setBalance }) {
     async function transfer(evt) {
       evt.preventDefault();
   
-      const promptValue = prompt("Por favor, ingresa un número:");
-      //if(toHex(secp256k1.getPublicKey(promptValue)) === toHex(address)){
-      if (promptValue === "2") {
+      const promptValue = prompt("Please enter your private key: ");
+      console.log("this is prompt value ",promptValue);
+      const publicKey = secp256k1.getPublicKey(promptValue);
+      console.log("this is public key value: ",toHex(publicKey));
+
+      if(toHex(publicKey) === address){
         try {
           const {
             data: { balance },
@@ -50,15 +55,12 @@ function Transfer({ address, setBalance }) {
             recipient,
           });
           setBalance(balance);
-          setSendAmount("");
-          setRecipient("");
+          alert("Confirmed")
         } catch (ex) {
           alert(ex.response.data.message);
         }
       } else {
-        alert("Error: El valor del campo de entrada no es igual a 2.");
-        setSendAmount("");
-        setRecipient("");
+        alert("Is the wrong private key");
       }
     }
   return (

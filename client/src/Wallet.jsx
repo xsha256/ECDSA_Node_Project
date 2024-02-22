@@ -1,21 +1,19 @@
 import server from "./server";
 
-let address
-console.log("Address desde wallet antes de funcion:", address)
-//! código
+//! mi código
 function Wallet({ address, setAddress, balance, setBalance}) {
   async function handleClick() {
-    let address = prompt("Please enter your name")
+    let address = prompt("Please enter your wallet address")
     setAddress(address);
-    console.log("Address desde wallet despues de prompt:", address)
-
     if (address) {
       try {
         const response = await server.get(`balance/${address}`);
         const { balance } = response.data;
         setBalance(balance);
+        alert(`Connected to ${address}`)
+
       } catch (error) {
-        console.error('Error al obtener el saldo:', error);
+        console.error('Error:', error);
       }
     } else {
       setBalance(0);
@@ -24,11 +22,12 @@ function Wallet({ address, setAddress, balance, setBalance}) {
   async function disconnect() {
     setAddress("connect your wallet");
     setBalance();
+    alert(`Disconnected`)
+
   }
 
   return (
     <div className="container wallet">
-      {address}
       <h1>Your Wallet</h1>
       <label>
         Wallet Address
@@ -36,13 +35,12 @@ function Wallet({ address, setAddress, balance, setBalance}) {
       </label>
 
       <div className="balance">Balance: {balance}</div>
-      <button className="button" onClick={handleClick}>Connect</button>
-      <button className="button" onClick={disconnect}>Disconnect</button>
+      <button className="button" onClick={handleClick}>Connect wallet</button>
+      <button className="button" onClick={disconnect}>Disconnect wallet</button>
     </div>
 
   );
 
-  export  {address};
 
 }
 //!código original
@@ -73,4 +71,4 @@ function Wallet({ address, setAddress, balance, setBalance}) {
 //   );
 // }
 
-export default Wallet;
+export default Wallet
