@@ -1,51 +1,52 @@
 import { secp256k1 } from "ethereum-cryptography/secp256k1";
-import { toHex } from "ethereum-cryptography/utils";
 import { useState } from "react";
 import server from "./server";
+import Sign from "./sign"
+
+
 
 
 function Transfer({ address, setBalance }) {
-  console.log("wallet address ", address)
-  console.log("Private key:  e73d1f45421257520c28b0c8671d401a8cc47ec4b1487759e232c17f8c7fc74a")
-  console.log("Public key:  038d0a4edb6b66470f45cdb3579196c7258b4f65ad59c99aab53ac78a5660df1f8")
-  //! código original
-  // const [sendAmount, setSendAmount] = useState("");
-  // const [recipient, setRecipient] = useState("");
-
-  // const setValue = (setter) => (evt) => setter(evt.target.value);
-
-  // async function transfer(evt) {
-  //   evt.preventDefault();
-
-  //   try {
-  //     const {
-  //       data: { balance },
-  //     } = await server.post(`send`, {
-  //       sender: address,
-  //       amount: parseInt(sendAmount),
-  //       recipient,
-  //     });
-  //     setBalance(balance);
-  //   } catch (ex) {
-  //     alert(ex.response.data.message);
-  //   }
-  // }
-
 
     const [sendAmount, setSendAmount] = useState("");
     const [recipient, setRecipient] = useState("");
-  
+
     const setValue = (setter) => (evt) => setter(evt.target.value);
-  
+
+    
+ 
     async function transfer(evt) {
       evt.preventDefault();
   
-      const promptValue = prompt("Please enter your private key: ");
-      console.log("this is prompt value ",promptValue);
-      const publicKey = secp256k1.getPublicKey(promptValue);
-      console.log("this is public key value: ",toHex(publicKey));
 
-      if(toHex(publicKey) === address){
+      //! prompt option
+      // const promptSignature = prompt("Please enter your signature: ");
+      // console.log("this is promptSignature value",promptSignature);
+      // console.log("this is promptSignature value",typeof(promptSignature));
+
+      // const promptSignatureString = promptSignature.substring(promptSignature.indexOf("{") + 1, promptSignature.lastIndexOf("}"));
+      // const promptSignatureStringToArray = promptSignatureString.split(",");
+      // const promptSignatureToObject = {};
+
+      // promptSignatureStringToArray.forEach(value => {
+      //   const [key, stringValue] = value.trim().split(":");
+      //   promptSignatureToObject[key.trim()] = BigInt(stringValue.trim().slice(0, -1))
+      // });
+
+      // console.log("created object", promptSignatureToObject);
+      // console.log(typeof(promptSignatureToObject));
+
+      // const promptMessageHash = prompt("Please enter your messageHash: ");
+      // console.log("this is promptMessageHash value ",promptMessageHash);
+      // console.log("This is messageHash type: ", typeof(promptMessageHash));
+      // console.log("This is address value ",address);
+      // console.log("This is address value type ",typeof(address));
+
+        const { signature, messageHash } = Sign(sendAmount, recipient, address);
+
+      const isSigned = secp256k1.verify(signature, messageHash, address);
+
+      if(isSigned){
         try {
           const {
             data: { balance },
@@ -61,7 +62,7 @@ function Transfer({ address, setBalance }) {
         }
       } else {
         alert("Is the wrong private key");
-      }
+       }
     }
   return (
     <form className="container transfer" onSubmit={transfer}>
@@ -84,13 +85,10 @@ function Transfer({ address, setBalance }) {
           onChange={setValue(setRecipient)}
         ></input>
       </label>
-      {/* //! codigo modificado */}
       <input type="submit" className="button" value="Transfer" onClick={transfer} />
-      
-      {/* // ! codigo original
-      <input type="submit" className="button" value="Transfer" /> */}
     </form>
   );
+
 }
 
 export default Transfer;
